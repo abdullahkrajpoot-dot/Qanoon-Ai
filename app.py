@@ -7,7 +7,7 @@ from dotenv import load_dotenv
 
 OPENROUTER_API_URL = "https://openrouter.ai/api/v1/chat/completions"
 DEFAULT_MODEL = "google/gemini-2.5-flash"
-APP_VERSION = "openrouter-2026-06-09-7"
+APP_VERSION = "openrouter-2026-06-09-8"
 MAX_OUTPUT_TOKENS = 900
 
 BASE_SYSTEM_PROMPT = (
@@ -19,21 +19,29 @@ BASE_SYSTEM_PROMPT = (
 )
 
 LANGUAGE_INSTRUCTIONS = {
+    "Auto": (
+        "Match the user's language and script exactly. "
+        "If the user asks in English, answer in English. "
+        "If the user asks in Urdu script, answer in Urdu script. "
+        "If the user asks in Roman Urdu or Roman English, answer in Roman English/Roman Urdu using Latin letters."
+    ),
     "English": "Answer only in clear English.",
     "Urdu": "Answer only in Urdu using Urdu script.",
-    "Roman Urdu": "Answer only in Roman Urdu.",
+    "Roman English": "Answer only in Roman English/Roman Urdu using Latin letters.",
 }
 
 CHAT_PLACEHOLDERS = {
+    "Auto": "Ask in English, Urdu, or Roman English...",
     "English": "Ask me about your legal problem...",
     "Urdu": "Apna legal masla yahan likhein...",
-    "Roman Urdu": "Apna legal masla yahan likhein...",
+    "Roman English": "Apna legal masla yahan likhein...",
 }
 
 LOADING_TEXT = {
+    "Auto": "Checking Pakistan legal sources and drafting an answer...",
     "English": "Checking Pakistan legal sources and drafting an answer...",
     "Urdu": "Pakistan ke qanooni sources check kar raha hoon aur jawab tayar kar raha hoon...",
-    "Roman Urdu": "Pakistan ke qanooni sources check kar raha hoon aur jawab tayar kar raha hoon...",
+    "Roman English": "Pakistan ke qanooni sources check kar raha hoon aur jawab tayar kar raha hoon...",
 }
 
 
@@ -144,8 +152,8 @@ st.markdown(
 api_key = get_openrouter_api_key()
 language = st.segmented_control(
     "Language",
-    options=["English", "Urdu", "Roman Urdu"],
-    default="English",
+    options=["Auto", "English", "Urdu", "Roman English"],
+    default="Auto",
     label_visibility="collapsed",
 )
 

@@ -7,7 +7,8 @@ from dotenv import load_dotenv
 
 OPENROUTER_API_URL = "https://openrouter.ai/api/v1/chat/completions"
 DEFAULT_MODEL = "google/gemini-2.5-flash"
-APP_VERSION = "openrouter-2026-06-09"
+APP_VERSION = "openrouter-2026-06-09-2"
+MAX_OUTPUT_TOKENS = 900
 
 SYSTEM_PROMPT = (
     "You are Qanoon AI, an expert legal assistant specializing in the laws of Pakistan "
@@ -36,7 +37,7 @@ def get_openrouter_api_key() -> str | None:
 def ask_qanoon_ai(user_query: str, api_key: str) -> str:
     model = get_secret("OPENROUTER_MODEL") or DEFAULT_MODEL
     messages = [{"role": "system", "content": SYSTEM_PROMPT}]
-    messages.extend(st.session_state.messages[-10:])
+    messages.extend(st.session_state.messages[-6:])
     messages.append({"role": "user", "content": user_query})
 
     headers = {
@@ -49,6 +50,7 @@ def ask_qanoon_ai(user_query: str, api_key: str) -> str:
         "model": model,
         "messages": messages,
         "temperature": 0.7,
+        "max_tokens": MAX_OUTPUT_TOKENS,
     }
 
     response = requests.post(

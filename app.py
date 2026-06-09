@@ -7,7 +7,7 @@ from dotenv import load_dotenv
 
 OPENROUTER_API_URL = "https://openrouter.ai/api/v1/chat/completions"
 DEFAULT_MODEL = "google/gemini-2.5-flash"
-APP_VERSION = "openrouter-2026-06-09-6"
+APP_VERSION = "openrouter-2026-06-09-7"
 MAX_OUTPUT_TOKENS = 900
 
 BASE_SYSTEM_PROMPT = (
@@ -121,13 +121,12 @@ st.markdown(
         margin-top: 1.25rem;
         text-align: center;
     }
-    [data-testid="stToolbar"] a[href*="github.com"],
-    [data-testid="stToolbar"] button[title*="GitHub"],
-    [data-testid="stToolbar"] button[aria-label*="GitHub"],
-    [data-testid="stToolbar"] button[title*="source"],
-    [data-testid="stToolbar"] button[aria-label*="source"],
-    [data-testid="stToolbar"] [title*="GitHub"],
-    [data-testid="stToolbar"] [aria-label*="GitHub"] {
+    [data-testid="stToolbar"],
+    [data-testid="stDecoration"],
+    [data-testid="stStatusWidget"],
+    header [data-testid="stToolbar"],
+    header button,
+    header a {
         display: none !important;
         visibility: hidden !important;
     }

@@ -7,7 +7,7 @@ from dotenv import load_dotenv
 
 OPENROUTER_API_URL = "https://openrouter.ai/api/v1/chat/completions"
 DEFAULT_MODEL = "google/gemini-2.5-flash"
-APP_VERSION = "openrouter-2026-06-09-2"
+APP_VERSION = "openrouter-2026-06-09-3"
 MAX_OUTPUT_TOKENS = 900
 
 SYSTEM_PROMPT = (

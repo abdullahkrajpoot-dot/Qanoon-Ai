@@ -7,11 +7,11 @@ from dotenv import load_dotenv
 
 OPENROUTER_API_URL = "https://openrouter.ai/api/v1/chat/completions"
 DEFAULT_MODEL = "google/gemini-2.5-flash"
-APP_VERSION = "openrouter-2026-06-09-4"
+APP_VERSION = "openrouter-2026-06-09-5"
 MAX_OUTPUT_TOKENS = 900
 
 BASE_SYSTEM_PROMPT = (
-    "You are Qanoon AI, an expert legal assistant specializing in the laws of Pakistan "
+    "You are Qanoon Agent, an expert legal assistant specializing in the laws of Pakistan "
     "(including the Pakistan Penal Code, Constitution of Pakistan, and CrPC). "
     "Provide accurate, helpful, and professional legal citations and explanations based on Pakistani law. "
     "Include a brief note that the answer is informational and not a substitute for a licensed lawyer "
@@ -65,7 +65,7 @@ def ask_qanoon_ai(user_query: str, api_key: str, language: str) -> str:
         "Authorization": f"Bearer {api_key}",
         "Content-Type": "application/json",
         "HTTP-Referer": "https://qanoon-ai.streamlit.app",
-        "X-Title": "Qanoon AI",
+        "X-Title": "Qanoon Agent",
     }
     payload = {
         "model": model,
@@ -92,7 +92,7 @@ def ask_qanoon_ai(user_query: str, api_key: str, language: str) -> str:
     return data["choices"][0]["message"]["content"]
 
 
-st.set_page_config(page_title="Qanoon AI", page_icon="⚖️", layout="centered")
+st.set_page_config(page_title="Qanoon Agent", page_icon="⚖️", layout="centered")
 
 st.markdown(
     """
@@ -126,9 +126,9 @@ st.markdown(
     unsafe_allow_html=True,
 )
 
-st.title("⚖️ Qanoon AI")
+st.title("⚖️ Qanoon Agent")
 st.markdown(
-    "<p class='bot-title'>Your Personal AI Legal Assistant for Pakistan Law</p>",
+    "<p class='bot-title'>Your Personal Legal Agent for Pakistan Law</p>",
     unsafe_allow_html=True,
 )
 

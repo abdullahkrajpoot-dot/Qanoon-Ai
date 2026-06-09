@@ -7,17 +7,34 @@ from dotenv import load_dotenv
 
 OPENROUTER_API_URL = "https://openrouter.ai/api/v1/chat/completions"
 DEFAULT_MODEL = "google/gemini-2.5-flash"
-APP_VERSION = "openrouter-2026-06-09-3"
+APP_VERSION = "openrouter-2026-06-09-4"
 MAX_OUTPUT_TOKENS = 900
 
-SYSTEM_PROMPT = (
+BASE_SYSTEM_PROMPT = (
     "You are Qanoon AI, an expert legal assistant specializing in the laws of Pakistan "
     "(including the Pakistan Penal Code, Constitution of Pakistan, and CrPC). "
     "Provide accurate, helpful, and professional legal citations and explanations based on Pakistani law. "
-    "Answer in English or Roman Urdu depending on how the user asks. "
     "Include a brief note that the answer is informational and not a substitute for a licensed lawyer "
     "when the question asks for legal advice."
 )
+
+LANGUAGE_INSTRUCTIONS = {
+    "English": "Answer only in clear English.",
+    "Urdu": "Answer only in Urdu using Urdu script.",
+    "Roman Urdu": "Answer only in Roman Urdu.",
+}
+
+CHAT_PLACEHOLDERS = {
+    "English": "Ask me about your legal problem...",
+    "Urdu": "Apna legal masla yahan likhein...",
+    "Roman Urdu": "Apna legal masla yahan likhein...",
+}
+
+LOADING_TEXT = {
+    "English": "Checking Pakistan legal sources and drafting an answer...",
+    "Urdu": "Pakistan ke qanooni sources check kar raha hoon aur jawab tayar kar raha hoon...",
+    "Roman Urdu": "Pakistan ke qanooni sources check kar raha hoon aur jawab tayar kar raha hoon...",
+}
 
 
 def get_secret(name: str) -> str | None:
@@ -34,9 +51,13 @@ def get_openrouter_api_key() -> str | None:
     return get_secret("OPENROUTER_API_KEY")
 
 
-def ask_qanoon_ai(user_query: str, api_key: str) -> str:
+def build_system_prompt(language: str) -> str:
+    return f"{BASE_SYSTEM_PROMPT} {LANGUAGE_INSTRUCTIONS[language]}"
+
+
+def ask_qanoon_ai(user_query: str, api_key: str, language: str) -> str:
     model = get_secret("OPENROUTER_MODEL") or DEFAULT_MODEL
-    messages = [{"role": "system", "content": SYSTEM_PROMPT}]
+    messages = [{"role": "system", "content": build_system_prompt(language)}]
     messages.extend(st.session_state.messages[-6:])
     messages.append({"role": "user", "content": user_query})
 
@@ -112,6 +133,12 @@ st.markdown(
 )
 
 api_key = get_openrouter_api_key()
+language = st.segmented_control(
+    "Language",
+    options=["English", "Urdu", "Roman Urdu"],
+    default="English",
+    label_visibility="collapsed",
+)
 
 if "messages" not in st.session_state:
     st.session_state.messages = []
@@ -123,16 +150,16 @@ for message in st.session_state.messages:
 if not api_key:
     st.error("OPENROUTER_API_KEY is missing. Add it to Streamlit secrets or your local .env file.")
 
-if user_query := st.chat_input("Ask me about your legal problem...", disabled=not api_key):
+if user_query := st.chat_input(CHAT_PLACEHOLDERS[language], disabled=not api_key):
     with st.chat_message("user"):
         st.markdown(user_query)
 
     with st.chat_message("assistant"):
         response_placeholder = st.empty()
-        response_placeholder.markdown("Checking Pakistan legal sources and drafting an answer...")
+        response_placeholder.markdown(LOADING_TEXT[language])
 
         try:
-            bot_response = ask_qanoon_ai(user_query, api_key)
+            bot_response = ask_qanoon_ai(user_query, api_key, language)
             response_placeholder.markdown(bot_response)
 
             st.session_state.messages.append({"role": "user", "content": user_query})
